@@ -1,36 +1,30 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {ApiResponse} from "./ApiResponseType";
 import './App.css'
-import { useEffect} from "react";
-import axios from 'axios';
+import { useFetch } from './hooks/useFetch';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [persons, setPersons] = useState([])
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [hide, setHide] = useState(true)
 
-  useEffect(() => {
-    const fetchData = async() =>{
-      try{
-        console.log("useEffect loading list");
-        const response = await axios.get("https://randomuser.me/api/?results=10");
-        const personsData = response.data.results;  
-        console.log("personsData: ", personsData);
-        setPersons( personsData );
-        console.log("persons: ", persons);
-        }catch(error){
-          console.error("erreur de recup donnnées", error);
-        }
-      
-      }
-      fetchData();
- 
-      }, []
-  );
 
-  const handleUserDetails = (id) => {
-    setSelectedPerson(id);
+  /** */
+  const {persons, loading, error} = useFetch<ApiResponse>({
+       url: "https://randomuser.me/api/?results=10"
+    })
+  
+  if(loading){
+    return (
+      <div className="">Loading</div>
+    )
+  }
+  if(error){
+
+    return <div>erreur test</div>
+  }
+
+   const handleUserDetails = (id) => {
+     setSelectedPerson(id);
   };
 
   const hideUserDetails = () => {
